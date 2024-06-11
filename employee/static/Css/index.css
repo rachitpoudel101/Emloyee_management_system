@@ -1,0 +1,14 @@
+.navbar-brand{
+  font-weight: 800;
+}
+
+.nav-link {
+  color: blueviolet !important;
+  font-size: large;
+}
+
+.nav-link:hover {
+  color: red!important;
+  background-color: white;
+  border-radius: 30px;;
+}
