@@ -1,11 +1,24 @@
 {% include "header.html" %}
 
+<script>
+    function checkpassword()
+    {
+        if (document.signup.password.value!=document.signup.cpassword.value)
+        {
+            alert("Passwords do not match");
+            document.signup.cpassword.focus();
+            return false;
+        }
+        return true;
+    }
+</script>
+
 <div class="card shadow m-4">
     <div class="card-body">
         <h5 class="p-2 text-danger" style="border-bottom: 3px solid red;">Create a new Account</h5>
 
         <div class="container-fluid">
-            <form method="POST">
+            <form method="POST" name = "signup" onsubmit = "return checkpassword()">
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-sm-6">
@@ -31,8 +44,8 @@
 
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label>Emaile ID</label>
-                            <input type="email" name="emailid" class="form-control" placeholder="Enter your Email ID" pattern="[0-9]+" required >
+                            <label>Email ID</label>
+                            <input type="email" name="emailid" class="form-control" placeholder="Enter your Email ID" required >
                         </div>
                     </div>
 
