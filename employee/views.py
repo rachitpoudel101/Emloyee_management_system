@@ -1,3 +1,4 @@
+from django.contrib.auth import  login,logout,authenticate
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from .models import EmployeeDetails
@@ -26,4 +27,18 @@ def registration(request):
     return render(request, 'registration.html', context)
 
 def emp_login(request):
-    return render(request, 'login.html')
+    error = ""
+    if request.method == 'POST':
+        u = request.POST['email']
+        p = request.POST['password']
+        user = authenticate (username = u, password = p)
+        if user :
+            login(request, user)
+            error = "no"
+        else :
+            error = "yes"
+    context = {'error': error}
+    return render(request, 'login.html', context)
+
+def emp_home(request):
+    return render(request, 'emp_home.html')
