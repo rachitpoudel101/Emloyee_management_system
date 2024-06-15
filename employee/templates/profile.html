@@ -1,85 +1,73 @@
 {% extends "emp_base.html" %}
 
 {% block main %}
-
-
 <div class="card shadow m-2">
     <div class="card-body">
         <h5 class="p-2 text-danger" style="border-bottom: 3px solid red;">Profile</h5>
-
         <div class="container-fluid">
-            <form method="POST" name="signup" onsubmit="return checkpassword()">
+            <form method="POST" name="signup">
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label>First Name</label>
-                            <input type="text" name="firstname" class="form-control" placeholder="Enter the first name" pattern="[A-Za-z]+" value="{{employee.user.first_name}}">
+                            <input type="text" name="firstname" class="form-control" placeholder="Enter the first name" pattern="[A-Za-z]+" value="{{ employee.user.first_name }}" required>
                         </div>
                     </div>
-
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label>Last Name</label>
-                            <input type="text" name="lastname" class="form-control" placeholder="Enter the last name" pattern="[A-Za-z]+" value="{{request.user.last_name}}">
+                            <input type="text" name="lastname" class="form-control" placeholder="Enter the last name" pattern="[A-Za-z]+" value="{{ employee.user.last_name }}" required>
                         </div>
                     </div>
-
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label>Employee Department</label>
-                            <input type="text" name="department" class="form-control" placeholder="Department" value="{{employee.empdept}}">
+                            <input type="text" name="department" class="form-control" placeholder="Department" value="{{ employee.empdept }}">
                         </div>
                     </div>
-
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label>Employee Designation</label>
-                            <input type="text" name="designation" class="form-control" placeholder="Designation" value="{{employee.designation}}">
+                            <input type="text" name="designation" class="form-control" placeholder="Designation" value="{{ employee.designation }}">
                         </div>
                     </div>
-
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label>Employee Code</label>
-                            <input type="text" name="employeecode" class="form-control" placeholder="Enter your employee code" pattern="[0-9]+" value="{{employee.empcode}}">
+                            <input type="text" name="employeecode" class="form-control" placeholder="Enter your employee code" pattern="[0-9]+" value="{{ employee.empcode }}" required>
                         </div>
                     </div>
-
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label>Contact</label>
-                            <input type="text" name="contact" class="form-control" placeholder="Contact" value="{{employee.contact}}" >
+                            <input type="text" name="contact" class="form-control" placeholder="Contact" value="{{ employee.contact }}">
                         </div>
                     </div>
-
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label>Email ID</label>
-                            <input type="email" name="emailid" class="form-control" placeholder="Email ID" value="{{employee.user.username}}" >
-                        </div>
-                    </div>
-
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label>Joning Date [{{employee.joiningdate}}]</label>
-                            <input type="date" name="Jdate" class="form-control" >
+                            <input type="email" name="emailid" class="form-control" placeholder="Email ID" value="{{ employee.user.email }}" required>
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label>Gender [{{employee.gender}}]</label>
-                            <select name= "gender" class= "form-control">
+                            <label>Joining Date</label>
+                            <input type="date" name="Jdate" class="form-control" value="{% if employee.joiningdate %}{{ employee.joiningdate|date:'Y-m-d' }}{% endif %}">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Gender</label>
+                            <select name="gender" class="form-control">
                                 <option value="none">Select Gender</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                                <option value="Other">Other</option>
+                                <option value="Male" {% if employee.gender == 'Male' %}selected{% endif %}>Male</option>
+                                <option value="Female" {% if employee.gender == 'Female' %}selected{% endif %}>Female</option>
+                                <option value="Other" {% if employee.gender == 'Other' %}selected{% endif %}>Other</option>
                             </select>
                         </div>
                     </div>
-                    
                 </div>
-                
                 <input type="submit" value="Submit" class="m-2 btn btn-primary">
             </form>
         </div>
@@ -88,8 +76,8 @@
 
 {% if error == "no" %}
 <script>
-    alert('Signup Successful');
-    window.location = '{% url "emp_login" %}';
+    alert('Profile Updated Successfully');
+    window.location = '{% url "profile" %}';
 </script>
 {% endif %}
 
@@ -99,6 +87,4 @@
 </script>
 {% endif %}
 
-
-
-{% endblock  %}
+{% endblock %}
