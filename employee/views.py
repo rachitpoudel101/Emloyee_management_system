@@ -1,5 +1,5 @@
 from django.contrib.auth import  login,logout,authenticate
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,redirect, get_object_or_404
 from django.contrib.auth.models import User
 from .models import EmployeeDetails
 
@@ -26,6 +26,46 @@ def registration(request):
     context = {'error': error}
     return render(request, 'registration.html', context)
 
+
+def profile(request):
+    error = ""
+    user = request.user
+    employee = get_object_or_404(EmployeeDetails, user=user)
+    
+    if request.method == 'POST':
+        fn = request.POST.get('firstname')
+        ln = request.POST.get('lastname')
+        ecode = request.POST.get('employeecode')
+        email = request.POST.get('email')
+        contact = request.POST.get('contact')
+        department = request.POST.get('department')
+        designation = request.POST.get('designation')
+        joining_date = request.POST.get('Jdate')
+        gender = request.POST.get('gender')
+        
+        try:
+            # Update the user's details
+            user.first_name = fn
+            user.last_name = ln
+            user.email = email
+            user.save()
+            
+            # Update the employee details
+            employee.empcode = ecode
+            employee.contact = contact
+            employee.department = department
+            employee.designation = designation
+            employee.joining_date = joining_date
+            employee.gender = gender
+            employee.save()
+            
+            error = "no"
+            return redirect('emp_login')
+        except Exception as e:
+            error = "yes"
+    
+    context = {'error': error, 'employee': employee}
+    return render(request, 'profile.html', context)
 def emp_login(request):
     error = ""
     if request.method == 'POST':
