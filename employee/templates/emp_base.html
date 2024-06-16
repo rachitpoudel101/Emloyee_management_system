@@ -23,7 +23,7 @@
                     <div class="list-group">
                         <a href="{% url 'emp_home' %}" class="list-group-item list-group-item-action {% if request.path == '/emp_home' %}active {% endif %}">Home</a>
                         <a href="{% url 'profile' %}" class="list-group-item list-group-item-action {% if request.path == '/profile' %}active {% endif %}">Profile</a>
-                        <a href="" class="list-group-item list-group-item-action">My Experience</a>
+                        <a href="{% url 'my_experience' %}" class="list-group-item list-group-item-action">My Experience</a>
                         <a href="" class="list-group-item list-group-item-action">Edit My Experience</a>
                         <a href="" class="list-group-item list-group-item-action">My Education</a>
                         <a href="" class="list-group-item list-group-item-action">Edit My Education</a>

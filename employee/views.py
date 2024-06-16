@@ -2,7 +2,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
-from .models import EmployeeDetails
+from .models import EmployeeDetails, EmployeeEducation, EmployeeExperience
 from django.urls import reverse
 
 def index(request):
@@ -17,15 +17,15 @@ def registration(request):
         email = request.POST.get('email')
         pwd = request.POST.get('password')
         try:
-            # Create the user
             user = User.objects.create_user(first_name=fn, last_name=ln, username=email, password=pwd)
-            # Create the employee details entry
             EmployeeDetails.objects.create(user=user, empcode=ecode)
+            EmployeeExperience.objects.create(user=user)
+            EmployeeEducation.objects.create(user=user)
             error = "no"
             return redirect('emp_login')
         except Exception as e:
             error = "yes"
-            print(e)  # Log the exception for debugging purposes
+            print(e)
     context = {'error': error}
     return render(request, 'registration.html', context)
 
@@ -47,13 +47,11 @@ def profile(request):
         gender = request.POST.get('gender')
         
         try:
-            # Update the user's details
             user.first_name = fn
             user.last_name = ln
             user.email = email
             user.save()
             
-            # Update the employee details
             employee.empcode = ecode
             employee.contact = contact
             employee.empdept = department
@@ -65,7 +63,7 @@ def profile(request):
             error = "no"
         except Exception as e:
             error = "yes"
-            print(e)  # Log the exception for debugging purposes
+            print(e)
     
     context = {'error': error, 'employee': employee}
     return render(request, 'profile.html', context)
@@ -94,3 +92,14 @@ def logout_view(request):
 
 def admin_login(request):
     return render(request, 'admin_login.html')
+
+@login_required(login_url='emp_login')
+def my_experience(request):
+    user = request.user
+    try:
+        experience = get_object_or_404(EmployeeExperience, user=user)
+        context = {'experience': experience}
+        return render(request, 'my_experience.html', context)
+    except Exception as e:
+        print(e)
+        return render(request, 'my_experience.html', {'error': 'Could not retrieve experience details.'})
