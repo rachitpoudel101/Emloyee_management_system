@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from .models import EmployeeDetails
+from django.urls import reverse
 
 def index(request):
     return render(request, 'index.html')
@@ -24,6 +25,7 @@ def registration(request):
             return redirect('emp_login')
         except Exception as e:
             error = "yes"
+            print(e)  # Log the exception for debugging purposes
     context = {'error': error}
     return render(request, 'registration.html', context)
 
@@ -63,9 +65,7 @@ def profile(request):
             error = "no"
         except Exception as e:
             error = "yes"
-    
-    # Fetch the updated employee object to ensure we have the latest data
-    employee = get_object_or_404(EmployeeDetails, user=user)
+            print(e)  # Log the exception for debugging purposes
     
     context = {'error': error, 'employee': employee}
     return render(request, 'profile.html', context)
@@ -78,7 +78,7 @@ def emp_login(request):
         user = authenticate(username=u, password=p)
         if user:
             login(request, user)
-            error = "no"
+            return redirect('emp_home')
         else:
             error = "yes"
     context = {'error': error}
@@ -91,3 +91,6 @@ def emp_home(request):
 def logout_view(request):
     logout(request)
     return redirect('index')
+
+def admin_login(request):
+    return render(request, 'admin_login.html')

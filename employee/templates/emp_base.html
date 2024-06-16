@@ -22,7 +22,7 @@
                 <center><img src = "{% static 'images/logo.png' %}" width = "100" height = "100"  class = "img-thumbnail rounded-circle my ="3""></center>
                     <div class="list-group">
                         <a href="{% url 'emp_home' %}" class="list-group-item list-group-item-action {% if request.path == '/emp_home' %}active {% endif %}">Home</a>
-                        <a href="{% url 'profile' %}" class="list-group-item list-group-item-action">Profile</a>
+                        <a href="{% url 'profile' %}" class="list-group-item list-group-item-action {% if request.path == '/profile' %}active {% endif %}">Profile</a>
                         <a href="" class="list-group-item list-group-item-action">My Experience</a>
                         <a href="" class="list-group-item list-group-item-action">Edit My Experience</a>
                         <a href="" class="list-group-item list-group-item-action">My Education</a>
