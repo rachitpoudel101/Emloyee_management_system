@@ -103,3 +103,40 @@ def my_experience(request):
     except Exception as e:
         print(e)
         return render(request, 'my_experience.html', {'error': 'Could not retrieve experience details.'})
+
+@login_required(login_url='emp_login')
+def edit_my_experience(request):
+    error = ""
+    user = request.user
+    
+    # Try to get the EmployeeExperience object, create it if it doesn't exist
+    experience, created = EmployeeExperience.objects.get_or_create(user=user)
+
+    if request.method == 'POST':
+        company1name = request.POST.get('company1name')
+        company1desig = request.POST.get('company1desig')
+        company1salary = request.POST.get('company1salary')
+        company1duration = request.POST.get('company1duration')
+        company2name = request.POST.get('company2name')
+        company2desig = request.POST.get('company2desig')
+        company2salary = request.POST.get('company2salary')
+        company2duration = request.POST.get('company2duration')
+        
+        try:
+            experience.company1name = company1name
+            experience.company1desig = company1desig
+            experience.company1salary = company1salary
+            experience.company1duration = company1duration
+            experience.company2name = company2name
+            experience.company2desig = company2desig
+            experience.company2salary = company2salary
+            experience.company2duration = company2duration
+            experience.save()
+            
+            error = "no"
+        except Exception as e:
+            error = "yes"
+            print(e)
+    
+    context = {'error': error, 'experience': experience}
+    return render(request, 'edit_exp.html', context)

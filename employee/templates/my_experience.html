@@ -4,9 +4,10 @@
 {% block main %}
 <div class="card shadow m-2">
     <div class="card-body">
+        <a href=" {% url "edit_my_experience" %}" class="btn btn-primary float-end btn-sm"> Edit Experience</a>
         <h5 class="p-2 text-danger" style="border-bottom: 3px solid red;">My Experience</h5>
         <div class="container-fluid">
-            <table>
+            <table class="table table-bordered">
                 <tr>
                     <th>First Company</th>
                     <td>{{experience.company1name}}</td>
@@ -26,6 +27,27 @@
                     <th>First Job  Duration</th>
                     <td>{{experience.company1duration}}</td>
                 </tr>
+
+                <tr>
+                    <th>Second Company</th>
+                    <td>{{experience.company2name}}</td>
+                </tr>
+
+                <tr>
+                    <th> Second Job Designation</th>
+                    <td>{{experience.company2desig}}</td>
+                </tr>
+
+                <tr>
+                    <th>Second Job Salary</th>
+                    <td>{{experience.company2salary}}</td>
+                </tr>
+
+                <tr>
+                    <th>Second Job  Duration</th>
+                    <td>{{experience.company2duration}}</td>
+                </tr>
+
             </table>
         </div>
     </div>
