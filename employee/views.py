@@ -2,7 +2,8 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
-from .models import EmployeeDetails, EmployeeEducation, EmployeeExperience
+from django.db import IntegrityError  # Import IntegrityError for database integrity checks
+from .models import EmployeeDetails, EmployeeExperience, EmployeeEducation
 from django.urls import reverse
 
 def index(request):
@@ -16,16 +17,28 @@ def registration(request):
         ecode = request.POST.get('employeecode')
         email = request.POST.get('email')
         pwd = request.POST.get('password')
+        
+        # Validate form data
+        if not all([fn, ln, ecode, email, pwd]):
+            error = "yes"
+            context = {'error': 'All fields are required'}
+            return render(request, 'registration.html', context)
+        
         try:
-            user = User.objects.create_user(first_name=fn, last_name=ln, username=email, password=pwd)
+            user = User.objects.create_user(first_name=fn, last_name=ln, username=email, email=email, password=pwd)
             EmployeeDetails.objects.create(user=user, empcode=ecode)
             EmployeeExperience.objects.create(user=user)
             EmployeeEducation.objects.create(user=user)
-            error = "no"
             return redirect('emp_login')
+        except IntegrityError as e:
+            error = "yes"
+            print(f"IntegrityError: {e}")
+            context = {'error': 'Integrity error occurred. Possibly due to duplicate entries or database constraints.'}
         except Exception as e:
             error = "yes"
-            print(e)
+            print(f"Exception: {e}")
+            context = {'error': 'An error occurred during registration. Please try again.'}
+
     context = {'error': error}
     return render(request, 'registration.html', context)
 
@@ -33,7 +46,7 @@ def registration(request):
 def profile(request):
     error = ""
     user = request.user
-    employee = get_object_or_404(EmployeeDetails, user=user)
+    employee, created = EmployeeDetails.objects.get_or_create(user=user)
 
     if request.method == 'POST':
         fn = request.POST.get('firstname')
@@ -45,26 +58,26 @@ def profile(request):
         designation = request.POST.get('designation')
         joining_date = request.POST.get('Jdate')
         gender = request.POST.get('gender')
-        
+
         try:
             user.first_name = fn
             user.last_name = ln
             user.email = email
             user.save()
-            
+
             employee.empcode = ecode
             employee.contact = contact
             employee.empdept = department
             employee.designation = designation
-            employee.joiningdate = joining_date  
+            employee.joiningdate = joining_date
             employee.gender = gender
             employee.save()
-            
+
             error = "no"
         except Exception as e:
             error = "yes"
-            print(e)
-    
+            print(f"Exception: {e}")
+
     context = {'error': error, 'employee': employee}
     return render(request, 'profile.html', context)
 
@@ -86,13 +99,6 @@ def emp_login(request):
 def emp_home(request):
     return render(request, 'emp_home.html')
 
-def logout_view(request):
-    logout(request)
-    return redirect('index')
-
-def admin_login(request):
-    return render(request, 'admin_login.html')
-
 @login_required(login_url='emp_login')
 def my_experience(request):
     user = request.user
@@ -101,15 +107,14 @@ def my_experience(request):
         context = {'experience': experience}
         return render(request, 'my_experience.html', context)
     except Exception as e:
-        print(e)
+        print(f"Exception: {e}")
         return render(request, 'my_experience.html', {'error': 'Could not retrieve experience details.'})
 
 @login_required(login_url='emp_login')
 def edit_my_experience(request):
     error = ""
     user = request.user
-    
-    # Try to get the EmployeeExperience object, create it if it doesn't exist
+
     experience, created = EmployeeExperience.objects.get_or_create(user=user)
 
     if request.method == 'POST':
@@ -121,7 +126,7 @@ def edit_my_experience(request):
         company2desig = request.POST.get('company2desig')
         company2salary = request.POST.get('company2salary')
         company2duration = request.POST.get('company2duration')
-        
+
         try:
             experience.company1name = company1name
             experience.company1desig = company1desig
@@ -132,11 +137,18 @@ def edit_my_experience(request):
             experience.company2salary = company2salary
             experience.company2duration = company2duration
             experience.save()
-            
+
             error = "no"
         except Exception as e:
             error = "yes"
-            print(e)
-    
+            print(f"Exception: {e}")
+
     context = {'error': error, 'experience': experience}
     return render(request, 'edit_exp.html', context)
+
+def logout_view(request):
+    logout(request)
+    return redirect('index')
+
+def admin_login(request):
+    return render(request, 'admin_login.html')

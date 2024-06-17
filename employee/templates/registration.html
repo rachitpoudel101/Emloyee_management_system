@@ -70,13 +70,14 @@
 
 {% if error == "no" %}
 <script>
-    alert('Signup Successful');
-    window.location = '{% url "emp_login" %}';
+    alert('Something went wrong, Try again later');
+    window.location = '{% url "profile" %}';
 </script>
 {% endif %}
 
 {% if error == "yes" %}
 <script>
-    alert('Something went wrong, Try again later');
+    alert('Profile Updated Successfully');
+    
 </script>
 {% endif %}
