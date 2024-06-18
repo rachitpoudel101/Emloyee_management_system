@@ -146,6 +146,69 @@ def edit_my_experience(request):
     context = {'error': error, 'experience': experience}
     return render(request, 'edit_exp.html', context)
 
+@login_required(login_url='emp_login')
+def my_education(request):
+    user = request.user
+    try:
+        education = get_object_or_404(EmployeeEducation, user=user)
+        context = {'experience': education}
+        return render(request, 'my_education.html', context)
+    except Exception as e:
+        print(f"Exception: {e}")
+        return render(request, 'my_education.html', {'error': 'Could not retrieve experience details.'})
+
+@login_required(login_url='emp_login')
+def edit_myeducation(request):
+    error = ""
+    user = request.user
+
+    education, created = EmployeeEducation.objects.get_or_create(user=user)
+
+    if request.method == 'POST':
+        coursepg = request.POST.get('coursepg')
+        schoolcolgpg = request.POST.get('schoolcolgpg')
+        yearofpassingpg = request.POST.get('yearofpassingpg')
+        percentagepg = request.POST.get('percentagepg')
+        coursegra = request.POST.get('coursegra')
+        schoolcolgra = request.POST.get('schoolcolgra')
+        yearofpassingra = request.POST.get('yearofpassingra')
+        percentagegra = request.POST.get('percentagegra')
+        coursessc = request.POST.get('coursessc')
+        schoolcolssc = request.POST.get('schoolcolssc')
+        yearofpassingssc = request.POST.get('yearofpassingssc')
+        percentagessc = request.POST.get('percentagessc')
+        coursehsc = request.POST.get('coursehsc')
+        schoolcolghsc = request.POST.get('schoolcolghsc')
+        yearofpassinghsc = request.POST.get('yearofpassinghsc')
+        percentagehsc = request.POST.get('percentagehsc')
+
+        try:
+            education.coursepg = coursepg
+            education.schoolcolgpg = schoolcolgpg
+            education.yearofpassingpg = yearofpassingpg
+            education.percentagepg = percentagepg
+            education.coursegra = coursegra
+            education.schoolcolgra = schoolcolgra
+            education.yearofpassingra = yearofpassingra
+            education.percentagegra = percentagegra
+            education.coursessc = coursessc
+            education.schoolcolssc = schoolcolssc
+            education.yearofpassingssc = yearofpassingssc
+            education.percentagessc = percentagessc
+            education.coursehsc = coursehsc
+            education.schoolcolghsc = schoolcolghsc
+            education.yearofpassinghsc = yearofpassinghsc
+            education.percentagehsc = percentagehsc
+            education.save()
+
+            error = "no"
+        except Exception as e:
+            error = "yes"
+            print(f"Exception: {e}")
+
+    context = {'error': error, 'experience': education}
+    return render(request, 'edit_myeducaton.html', context)
+
 def logout_view(request):
     logout(request)
     return redirect('index')
