@@ -1,10 +1,10 @@
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import logout
+from django.contrib.auth import login, logout as auth_logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
-from django.db import IntegrityError  # Import IntegrityError for database integrity checks
+from django.db import IntegrityError
 from .models import EmployeeDetails, EmployeeExperience, EmployeeEducation
-from django.urls import reverse
 
 def index(request):
     return render(request, 'index.html')
@@ -20,7 +20,6 @@ def registration(request):
         
         # Validate form data
         if not all([fn, ln, ecode, email, pwd]):
-            error = "yes"
             context = {'error': 'All fields are required'}
             return render(request, 'registration.html', context)
         
@@ -30,17 +29,14 @@ def registration(request):
             EmployeeExperience.objects.create(user=user)
             EmployeeEducation.objects.create(user=user)
             return redirect('emp_login')
-        except IntegrityError as e:
-            error = "yes"
-            print(f"IntegrityError: {e}")
+        except IntegrityError:
             context = {'error': 'Integrity error occurred. Possibly due to duplicate entries or database constraints.'}
         except Exception as e:
-            error = "yes"
-            print(f"Exception: {e}")
             context = {'error': 'An error occurred during registration. Please try again.'}
-
-    context = {'error': error}
-    return render(request, 'registration.html', context)
+            print(f"Exception: {e}")
+        return render(request, 'registration.html', context)
+    
+    return render(request, 'registration.html', {'error': error})
 
 @login_required(login_url='emp_login')
 def profile(request):
@@ -151,11 +147,11 @@ def my_education(request):
     user = request.user
     try:
         education = get_object_or_404(EmployeeEducation, user=user)
-        context = {'experience': education}
+        context = {'education': education}
         return render(request, 'my_education.html', context)
     except Exception as e:
         print(f"Exception: {e}")
-        return render(request, 'my_education.html', {'error': 'Could not retrieve experience details.'})
+        return render(request, 'my_education.html', {'error': 'Could not retrieve education details.'})
 
 @login_required(login_url='emp_login')
 def edit_myeducation(request):
@@ -206,10 +202,34 @@ def edit_myeducation(request):
             error = "yes"
             print(f"Exception: {e}")
 
-    context = {'error': error, 'experience': education}
-    return render(request, 'edit_myeducaton.html', context)
+    context = {'error': error, 'education': education}
+    return render(request, 'edit_myeducation.html', context)
 
-def logout_view(request):
+@login_required(login_url='emp_login')
+def change_password(request):
+    error = ""
+    user = request.user
+
+    if request.method == 'POST':
+        c = request.POST['currentpassword']
+        n = request.POST['npassword']
+
+        try:
+            if user.check_password(c):
+                user.set_password(n)
+                user.save()
+                error = "no"
+            else:
+                error = "not"
+        except Exception as e:
+            error = "yes"
+            print(f"Exception: {e}")
+
+    context = {'error': error}
+    return render(request, 'change_password.html', context)
+
+@login_required(login_url='emp_login')
+def user_logout(request):
     logout(request)
     return redirect('index')
 

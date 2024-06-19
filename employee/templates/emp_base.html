@@ -27,8 +27,8 @@
                         <a href=" {% url "edit_my_experience" %}" class="list-group-item list-group-item-action {% if request.path == '/edit_my_experience' %}active {% endif %} ">Edit My Experience</a>
                         <a href="{% url "my_education" %}" class="list-group-item list-group-item-action {% if request.path == '/my_education' %}active {% endif %} ">My Education</a>
                         <a href="{% url "edit_myeducation" %}" class="list-group-item list-group-item-action {% if request.path == '/edit_myeducation' %}active {% endif %} ">Edit My Education</a>
-                        <a href="" class="list-group-item list-group-item-action">Change My Password</a>
-                        <a href="{% url 'logout' %}" class="list-group-item list-group-item-action">Log Out</a>
+                        <a href="{% url "change_password" %}" class="list-group-item list-group-item-action {% if request.path == '/change_password' %}active {% endif %}">Change My Password</a>
+                        <a href="{% url "user_logout" %}" class="list-group-item list-group-item-action">LogOut</a>
                     </div>
             </div>
             <div class="col-sm-10 p-0">
