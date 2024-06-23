@@ -235,3 +235,21 @@ def user_logout(request):
 
 def admin_login(request):
     return render(request, 'admin_login.html')
+
+
+def admin_login(request):
+    error = ""
+    if request.method == 'POST':
+        u = request.POST['username']
+        p = request.POST['pwd']
+        user = authenticate(username=u, password=p)
+        if user.is_staff:
+            login(request, user)
+            return redirect('emp_home')
+        else:
+            error = "yes"
+    context = {'error': error}
+    return render(request, 'admin_login.html', context)
+
+def admin_home(request):
+    return render(request, 'admin_home.html')
