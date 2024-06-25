@@ -1,10 +1,12 @@
+from pyexpat.errors import messages
 from django.contrib.auth import logout
-from django.contrib.auth import login, logout as auth_logout, authenticate
+from django.contrib.auth import login, logout as logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from .models import EmployeeDetails, EmployeeExperience, EmployeeEducation
+
 
 def index(request):
     return render(request, 'index.html')
@@ -238,18 +240,24 @@ def admin_login(request):
 
 
 def admin_login(request):
-    error = ""
     if request.method == 'POST':
-        u = request.POST['username']
-        p = request.POST['pwd']
-        user = authenticate(username=u, password=p)
-        if user.is_staff:
-            login(request, user)
-            return redirect('emp_home')
+        username = request.POST.get('username')
+        password = request.POST.get('pwd')
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            if user.is_staff:
+                login(request, user)
+                return redirect('admin_home')
+            else:
+                messages.error(request, 'You do not have admin privileges.')
         else:
-            error = "yes"
-    context = {'error': error}
-    return render(request, 'admin_login.html', context)
+            messages.error(request, 'Invalid username or password.')
+    
+    return render(request, 'admin_login.html')
 
 def admin_home(request):
+    if not request.user.is_authenticated or not request.user.is_staff:
+        return redirect('admin_login')
     return render(request, 'admin_home.html')
