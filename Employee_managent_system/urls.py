@@ -19,4 +19,5 @@ urlpatterns = [
     path('my_education/', my_education, name='my_education'),
     path('edit_myeducation/', edit_myeducation, name='edit_myeducation'),
     path('change_password/', change_password, name='change_password'),
+    path('change_password_admin/', change_password_admin, name='change_password_admin'),
 ]

@@ -246,18 +246,39 @@ def admin_login(request):
 
         user = authenticate(request, username=username, password=password)
 
-        if user is not None:
-            if user.is_staff:
-                login(request, user)
-                return redirect('admin_home')
-            else:
-                messages.error(request, 'You do not have admin privileges.')
+        if user:
+            login(request, user)
+            return redirect('admin_home')
         else:
-            messages.error(request, 'Invalid username or password.')
-    
-    return render(request, 'admin_login.html')
+            error = "yes"
+    context = {'error': error}
+    return render(request, 'admin_login.html', context)
 
 def admin_home(request):
     if not request.user.is_authenticated or not request.user.is_staff:
         return redirect('admin_login')
     return render(request, 'admin_home.html')
+
+
+@login_required(login_url='admin_login')
+def change_password_admin(request):
+    error = ""
+    user = request.user
+
+    if request.method == 'POST':
+        c = request.POST['currentpassword']
+        n = request.POST['npassword']
+
+        try:
+            if user.check_password(c):
+                user.set_password(n)
+                user.save()
+                error = "no"
+            else:
+                error = "not"
+        except Exception as e:
+            error = "yes"
+            print(f"Exception: {e}")
+
+    context = {'error': error}
+    return render(request, 'admin_changepassword.html', context)
