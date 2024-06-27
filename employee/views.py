@@ -1,4 +1,4 @@
-from pyexpat.errors import messages
+from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout
 from django.contrib.auth import login, logout as logout, authenticate
 from django.contrib.auth.decorators import login_required
@@ -240,6 +240,7 @@ def admin_login(request):
 
 
 def admin_login(request):
+    error = None  # Initialize the variable before any condition
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('pwd')
@@ -251,6 +252,7 @@ def admin_login(request):
             return redirect('admin_home')
         else:
             error = "yes"
+    
     context = {'error': error}
     return render(request, 'admin_login.html', context)
 
@@ -282,3 +284,10 @@ def change_password_admin(request):
 
     context = {'error': error}
     return render(request, 'admin_changepassword.html', context)
+
+def all_employee(request):
+    if not request.user.is_authenticated or not request.user.is_staff:
+        return redirect('admin_login')
+    employee =EmployeeDetails.objects.all()
+    context = {'employee': employee}
+    return render(request, 'all_employee.html', context)
