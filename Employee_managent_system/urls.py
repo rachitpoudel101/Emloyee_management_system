@@ -21,4 +21,7 @@ urlpatterns = [
     path('change_password/', change_password, name='change_password'),
     path('change_password_admin/', change_password_admin, name='change_password_admin'),
     path('all_employee/', all_employee, name='all_employee'),
+    path('edit_employee/<int:pid>/', edit_employee, name='edit_employee'),
+    path('delete_employee/<int:pid>/', delete_employee, name='delete_employee'),
+    path('edit_education/<int:pid>/', edit_education, name='edit_education'),
 ]

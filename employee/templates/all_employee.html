@@ -2,12 +2,12 @@
 
 {% block main %}
 
-<div class="card shadow m-2" style="background-color: #f8f9fa; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+<div class="card shadow m-2"  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
     <div class="card-body">
         <h5 class="p-2 text-danger" style="border-bottom: 3px solid red;"> Employee Details</h5>
         <div class="container-fluid">
-            <table class="table table-bordered" id="example" style="width:100%">
-                <thead class="text-danger" style="background-color: #007bff;">
+            <table class="table table-bordered table-hover table-striped" id="example">
+                <thead class="bg-danger text-danger">
                     <tr>
                         <th>S.No.</th>
                         <th>Emp Code</th>
@@ -16,7 +16,8 @@
                         <th>Email Id</th>
                         <th>Contact No.</th>
                         <th>Joining Date</th>
-                        <th>Action</th>
+                        <th>Action</th>  
+                        <th>Delete</th>  
                     </tr>
                 </thead>
                 <tbody>
@@ -29,8 +30,11 @@
                         <td>{{ i.user.email }}</td>
                         <td>{{ i.contact }}</td>
                         <td>{{ i.joiningdate }}</td>
-                        {% comment %} <td><a href="{% url 'edit_employee' i.id %}" class="btn btn-primary" style="background-color: #28a745; border-color: #28a745;">Edit</a></td>
-                        <td><a href="{% url 'delete_employee' i.id %}" class="btn btn-danger" style="background-color: #dc3545; border-color: #dc3545;">Delete</a></td> {% endcomment %}
+                        <td><a href="{% url 'edit_employee' i.id %}" class="text-primary">Edit Profile Detail</a>
+                        <br>
+                            <a href="{% url 'edit_education' i.user.id %}" class="text-primary">Edit Employee Education</a>
+                            <td><a href="{% url 'delete_employee' i.user.id %}" class="text-danger" onclick="return confirm('Are You Sure')">Delete</a></td>
+                            </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -38,26 +42,5 @@
         </div>
     </div>
 </div>
-
-<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        new DataTable('#example', {
-            order: [[0, 'asc']],
-            dom: 'Bfrtip',
-            buttons: ['copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5']
-        });
-    });
-</script>
 
 {% endblock %}

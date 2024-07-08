@@ -291,3 +291,88 @@ def all_employee(request):
     employee =EmployeeDetails.objects.all()
     context = {'employee': employee}
     return render(request, 'all_employee.html', context)
+
+def delete_employee(request, pid):
+    if not request.user.is_authenticated or not request.user.is_staff:
+        return redirect('admin_login')
+    employee = EmployeeDetails.objects.get(id=pid)
+    employee.delete()
+    return redirect('all_employee')
+
+@login_required(login_url='admin_login')
+def edit_employee(request, pid):
+    if not request.user.is_staff:
+        return redirect('admin_login')
+    
+    employee = get_object_or_404(EmployeeDetails, id=pid)
+    user = employee.user  # Get the related User object
+    if request.method == 'POST':
+        user.first_name = request.POST.get('first_name')
+        user.last_name = request.POST.get('last_name')
+        user.email = request.POST.get('email')
+        user.save()
+        
+        employee.contact = request.POST.get('contact')
+        employee.empdept = request.POST.get('department')
+        employee.designation = request.POST.get('designation')
+        employee.joiningdate = request.POST.get('Jdate')
+        employee.gender = request.POST.get('gender')
+        employee.save()
+        
+        return redirect('all_employee')
+    
+    context = {'employee': employee}
+    return render(request, 'edit_employee.html', context)
+
+
+
+@login_required(login_url='admin_login')
+def edit_education(request,pid):
+    error = ""
+    user = User.objects.get(id=pid)
+    education = EmployeeEducation.objects.get(user=user)
+
+    if request.method == 'POST':
+        coursepg = request.POST.get('coursepg')
+        schoolcolgpg = request.POST.get('schoolcolgpg')
+        yearofpassingpg = request.POST.get('yearofpassingpg')
+        percentagepg = request.POST.get('percentagepg')
+        coursegra = request.POST.get('coursegra')
+        schoolcolgra = request.POST.get('schoolcolgra')
+        yearofpassingra = request.POST.get('yearofpassingra')
+        percentagegra = request.POST.get('percentagegra')
+        coursessc = request.POST.get('coursessc')
+        schoolcolssc = request.POST.get('schoolcolssc')
+        yearofpassingssc = request.POST.get('yearofpassingssc')
+        percentagessc = request.POST.get('percentagessc')
+        coursehsc = request.POST.get('coursehsc')
+        schoolcolghsc = request.POST.get('schoolcolghsc')
+        yearofpassinghsc = request.POST.get('yearofpassinghsc')
+        percentagehsc = request.POST.get('percentagehsc')
+
+        try:
+            education.coursepg = coursepg
+            education.schoolcolgpg = schoolcolgpg
+            education.yearofpassingpg = yearofpassingpg
+            education.percentagepg = percentagepg
+            education.coursegra = coursegra
+            education.schoolcolgra = schoolcolgra
+            education.yearofpassingra = yearofpassingra
+            education.percentagegra = percentagegra
+            education.coursessc = coursessc
+            education.schoolcolssc = schoolcolssc
+            education.yearofpassingssc = yearofpassingssc
+            education.percentagessc = percentagessc
+            education.coursehsc = coursehsc
+            education.schoolcolghsc = schoolcolghsc
+            education.yearofpassinghsc = yearofpassinghsc
+            education.percentagehsc = percentagehsc
+            education.save()
+
+            error = "no"
+        except Exception as e:
+            error = "yes"
+            print(f"Exception: {e}")
+
+    context = {'error': error, 'education': education}
+    return render(request, 'edit_education.html', context)
