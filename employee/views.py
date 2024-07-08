@@ -376,3 +376,39 @@ def edit_education(request,pid):
 
     context = {'error': error, 'education': education}
     return render(request, 'edit_education.html', context)
+
+
+def edit_experience(request,pid):
+    error = ""
+    user = User.objects.get(id=pid)
+
+    experience, created = EmployeeExperience.objects.get_or_create(user=user)
+
+    if request.method == 'POST':
+        company1name = request.POST.get('company1name')
+        company1desig = request.POST.get('company1desig')
+        company1salary = request.POST.get('company1salary')
+        company1duration = request.POST.get('company1duration')
+        company2name = request.POST.get('company2name')
+        company2desig = request.POST.get('company2desig')
+        company2salary = request.POST.get('company2salary')
+        company2duration = request.POST.get('company2duration')
+
+        try:
+            experience.company1name = company1name
+            experience.company1desig = company1desig
+            experience.company1salary = company1salary
+            experience.company1duration = company1duration
+            experience.company2name = company2name
+            experience.company2desig = company2desig
+            experience.company2salary = company2salary
+            experience.company2duration = company2duration
+            experience.save()
+
+            error = "no"
+        except Exception as e:
+            error = "yes"
+            print(f"Exception: {e}")
+
+    context = {'error': error, 'experience': experience}
+    return render(request, 'edit_experience.html', context)

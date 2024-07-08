@@ -24,4 +24,5 @@ urlpatterns = [
     path('edit_employee/<int:pid>/', edit_employee, name='edit_employee'),
     path('delete_employee/<int:pid>/', delete_employee, name='delete_employee'),
     path('edit_education/<int:pid>/', edit_education, name='edit_education'),
+    path('edit_experience/<int:pid>/', edit_experience, name='edit_experience'),
 ]
